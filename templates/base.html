@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Minecraft Server Panel</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
 </head>
 <body>
+    <div class="navbar">
+        Minecraft Server
+    </div>
     <div class="container">
-        <div class="status">
-            Server Status: <strong>{{ status }}</strong>
-        </div>
-
-        <form method="POST" action="/start">
-            <button class="start">Start Server</button>
-        </form>
-
-        <form method="POST" action="/stop">
-            <button class="stop">Stop Server</button>
-        </form>
+        {% block content %}
+        {% endblock %}
     </div>
 </body>
 </html>

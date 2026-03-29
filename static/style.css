@@ -1,34 +1,90 @@
 body {
-    font-family: Arial;
-    text-align: center;
-    background-color: #121212;
-    color: white;
+    margin: 0;
+    font-family: "Segoe UI", Arial;
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+.navbar {
+    background: #1e293b;
+    padding: 20px;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .container {
-    margin-top: 100px;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
 }
 
-button {
-    padding: 15px 30px;
-    margin: 10px;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+.card {
+    background: #1e293b;
+    padding: 30px;
+    border-radius: 16px;
+    width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-.start {
-    background-color: green;
-    color: white;
-}
-
-.stop {
-    background-color: red;
-    color: white;
+h2 {
+    margin-top: 0;
 }
 
 .status {
-    font-size: 24px;
-    margin-bottom: 20px;
+    margin: 20px 0;
+    font-size: 18px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.start {
+    background: green;
+    color: white;
+}
+
+.start:hover {
+    background: #1ebd58;
+}
+
+.stop {
+    background: rgb(177, 1, 1);
+    color: white;
+}
+
+.stop:hover {
+    background: #f52929;
+}
+
+.folder {
+    background: blue;
+    color: white;
+}
+
+.folder:hover {
+    background: #3f7af8;
+}
+
+.path {
+    font-size: 12px;
+    margin-top: 10px;
+    color: #94a3b8;
+    word-break: break-all;
 }

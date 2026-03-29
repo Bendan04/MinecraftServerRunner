@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="card">
+    <h2>Dashboard</h2>
+    <div class="status">
+        Status: <strong>{{ status }}</strong>
+    </div>
+    <form method="POST" action="/set-folder">
+        <label>Server Folder Path</label>
+        <input type="text" name="folder" placeholder="e.g. C:\MinecraftServer" required>
+        <button class="folder">Set Server Folder</button>
+    </form>
+    {% if folder %}
+    <div class="path">
+        Current: {{ folder }}
+    </div>
+    {% endif %}
+    <form method="POST" action="/start">
+        <button class="start">Start Server</button>
+    </form>
+    <form method="POST" action="/stop">
+        <button class="stop">Stop Server</button>
+    </form>
+</div>
+
+{% endblock %}

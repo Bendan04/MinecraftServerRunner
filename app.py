@@ -5,59 +5,85 @@ import os
 app = Flask(__name__)
 
 server_process = None
-SERVER_FOLDER = "server" # Placeholder
+SERVER_FOLDER = None
+
 
 def accept_eula():
-    eula_path = os.path.join(SERVER_FOLDER, "eula.txt") # Auto accept EULA
-    with open(eula_path, "w") as f: # Create eula.txt and write "eula=true" to it
-        f.write("eula=true\n") # Accept EULA
+    if not SERVER_FOLDER:
+        return
+
+    eula_path = os.path.join(SERVER_FOLDER, "eula.txt")
+    with open(eula_path, "w") as f:
+        f.write("eula=true\n")
+
 
 def find_server_file():
-    for file in os.listdir(SERVER_FOLDER): # Look for .bat or .jar files in the server folder
-        if file.endswith(".bat"): # If a .bat file is found, return it
+    if not SERVER_FOLDER:
+        return (None, None)
+
+    for file in os.listdir(SERVER_FOLDER):
+        if file.endswith(".bat"):
             return ("bat", file)
-        if file.endswith(".jar"): # If a .jar file is found, return it
-            return ("jar", file)
+        #if file.endswith(".jar"): # Uncomment this eventually to also work with java server starters
+            #return ("jar", file)
+
     return (None, None)
+
 
 @app.route("/")
 def index():
-    status = "Running" if server_process else "Stopped" # Determine server status based on whether the process is running
-    return render_template("base.html", status=status)
+    status = "Running" if server_process else "Stopped"
+    return render_template(
+        "dashboard.html",
+        status=status,
+        folder=SERVER_FOLDER
+    )
 
-@app.route("/start", methods=["POST"])
-def start():
-    global server_process
 
-    if server_process is None:
-        accept_eula() # Ensure EULA is accepted before starting the server
+@app.route("/set-folder", methods=["POST"])
+def set_folder():
+    global SERVER_FOLDER
+    folder = request.form.get("folder")
 
-        file_type, file_name = find_server_file() # Find the server file to run (either .bat or .jar)
-
-        if file_type == "bat": # If it's a .bat file, run it directly using subprocess.Popen
-            server_process = subprocess.Popen(
-                file_name,
-                cwd=SERVER_FOLDER,
-                shell=True
-            )
-
-        elif file_type == "jar": # If it's a .jar file, run it using "java -jar" command
-            server_process = subprocess.Popen(
-                ["java", "-jar", file_name, "nogui"],
-                cwd=SERVER_FOLDER
-            )
+    if folder and os.path.exists(folder):
+        SERVER_FOLDER = folder
 
     return redirect("/")
+
+
+
+@app.route("/start", methods=["POST"]) 
+def start(): 
+    global server_process 
+    if server_process is None and SERVER_FOLDER: 
+        accept_eula() 
+        file_type, file_name = find_server_file() 
+        if file_type == "bat": 
+            print("Starting server using batch file:", file_name) 
+
+            server_process = subprocess.Popen(
+                ["cmd.exe", "/k", 'run.bat'], # Change this to f'{file_name}' eventually
+                cwd=SERVER_FOLDER,
+                creationflags=subprocess.CREATE_NEW_CONSOLE
+        )
+        elif file_type == "jar": 
+            print("Starting server using jar file:", file_name) 
+            server_process = subprocess.Popen( ["java", "-jar", file_name, "nogui"],
+             cwd=SERVER_FOLDER, creationflags=subprocess.CREATE_NEW_CONSOLE ) 
+            
+    return redirect("/")
+
 
 @app.route("/stop", methods=["POST"])
 def stop():
     global server_process
 
-    if server_process: # If the server process is running, terminate it
+    if server_process:
         server_process.terminate()
         server_process = None
 
     return redirect("/")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
